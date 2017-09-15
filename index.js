@@ -51,7 +51,7 @@ export class Tabs extends React.Component {
         parent: item.parent,
         attr: item.attr,
         itemClass: itemCls,
-        itemMethod: item.itemMethod
+        itemMethod: item.tabItemMethod
       })
 
       // 准备内容数据
@@ -76,7 +76,7 @@ export class Tabs extends React.Component {
     const treeMenu = this.tree({
       data: menu_data,
       itemClass: this.props.itemClass,
-      itemMethod: this.props.itemMethod,
+      itemMethod: this.props.tabItemMethod,
       header: this.props.treeHeader,
       footer: this.props.treeFotter
     })
@@ -147,6 +147,10 @@ Aotoo.extend('tabs', function(opts, utile){
       mulitple: false
     }
   }
+  if (opts.props && opts.props.itemMethod) {
+    opts.props.tabItemMethod = opts.props.itemMethod
+    delete opts.props.itemMethod
+  }
   opts = utile.merge(dft, opts)
 
   const Action = {
@@ -167,8 +171,15 @@ Aotoo.extend('tabs', function(opts, utile){
     },
   }
 
-  return Aotoo(Tabs, Action, dft)
-
+  const myTabs = Aotoo(Tabs, Action, dft)
+  myTabs.setProps = function(options){
+    if (options.itemMethod) {
+      options.tabItemMethod = options.itemMethod
+      delete options.itemMethod
+      myTabs.config = utile.merge({}, myTabs.config, {props: options})
+    }
+  }
+  return myTabs
 })
 
 

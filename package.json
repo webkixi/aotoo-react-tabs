@@ -1,6 +1,6 @@
 {
   "name": "aotoo-react-tabs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "react tabs component that based on the aotoo",
   "main": "./build/index.js",
   "scripts": {
