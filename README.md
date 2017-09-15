@@ -1,4 +1,4 @@
-# aotoo-react-treex
+# aotoo-react-tabs
 
 ## Install
 ```bash
@@ -11,7 +11,7 @@ Depends on aotoo this library, `Aotoo` is a global variable
 
 ```jsx
 import aotoo from 'aotoo'
-window.Aotoo = aotoo
+require('aotoo-web-widgets')
 require('aotoo-react-tabs')
 
 const WrapElement = Aotoo.wrap( <div>这个真好吃</div>, {
