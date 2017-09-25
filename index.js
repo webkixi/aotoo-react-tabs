@@ -9,7 +9,7 @@ export class Tabs extends React.Component {
       data: this.props.data||[],
       select: this.props.select||this.props.start||0,
       selectData: {},
-      showMenu: this.props.showMenu||true,
+      showMenu: this.props.showMenu,
     }
 
     this.prepaireData = this.prepaireData.bind(this)
@@ -139,19 +139,21 @@ export class Tabs extends React.Component {
   }
 }
 
-Aotoo.extend('tabs', function(opts, utile){
+Aotoo.extend('tabs', function(params, utile){
 
   let dft = {
     props: {
       tabClass: 'tabsGroupX',
-      mulitple: false
+      mulitple: false,
+      tabItemMethod: undefined,
+      showMenu: true
     }
   }
-  if (opts.props && opts.props.itemMethod) {
-    opts.props.tabItemMethod = opts.props.itemMethod
-    delete opts.props.itemMethod
+  if (params.props && params.props.itemMethod) {
+    params.props.tabItemMethod = params.props.itemMethod
+    delete params.props.itemMethod
   }
-  opts = utile.merge(dft, opts)
+  dft = utile.merge({}, dft, params)
 
   const Action = {
     UPDATE: function(ostate, opts){
