@@ -61,6 +61,8 @@ var Tabs = exports.Tabs = function (_React$Component) {
       var that = this;
       var props = this.props;
       var propsItemClass = props.itemClass ? props.itemClass + ' ' : '';
+      var myItemMethod = props.tabItemMethod || props.itemMethod;
+
       var menuData = [];
       var contentData = [];
       state.data.forEach(function (item, ii) {
@@ -75,7 +77,7 @@ var Tabs = exports.Tabs = function (_React$Component) {
           parent: item.parent,
           attr: item.attr,
           itemClass: itemCls,
-          itemMethod: item.tabItemMethod
+          itemMethod: myItemMethod
         }
 
         // 准备内容数据
@@ -97,11 +99,14 @@ var Tabs = exports.Tabs = function (_React$Component) {
   }, {
     key: 'createMenu',
     value: function createMenu() {
+      var props = this.props;
       var menu_data = this.saxer.get().MenuData;
+      var myItemMethod = props.tabItemMethod || props.itemMethod;
+
       var treeMenu = this.tree({
         data: menu_data,
         itemClass: this.props.itemClass,
-        itemMethod: this.props.tabItemMethod,
+        itemMethod: myItemMethod,
         header: this.props.treeHeader,
         footer: this.props.treeFotter
       });

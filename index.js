@@ -35,6 +35,8 @@ export class Tabs extends React.Component {
     const that = this
     const props = this.props
     const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
+    const myItemMethod = props.tabItemMethod || props.itemMethod
+    
     let menuData = []
     let contentData = []
     state.data.forEach( (item, ii) => {
@@ -51,7 +53,7 @@ export class Tabs extends React.Component {
         parent: item.parent,
         attr: item.attr,
         itemClass: itemCls,
-        itemMethod: item.tabItemMethod
+        itemMethod: myItemMethod
       })
 
       // 准备内容数据
@@ -72,11 +74,14 @@ export class Tabs extends React.Component {
   }
 
   createMenu(){
+    const props = this.props
     const menu_data = this.saxer.get().MenuData
+    const myItemMethod = props.tabItemMethod || props.itemMethod
+    
     const treeMenu = this.tree({
       data: menu_data,
       itemClass: this.props.itemClass,
-      itemMethod: this.props.tabItemMethod,
+      itemMethod: myItemMethod,
       header: this.props.treeHeader,
       footer: this.props.treeFotter
     })
