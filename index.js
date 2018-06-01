@@ -1,6 +1,16 @@
-/**
- * depends Aotoo as global variable
- */
+const TabsMenus = (props) => {
+  let myProps = {...props}
+  myProps.data = myProps.data.map( item => {
+    const className = item.itemClass||''
+    if (item.index == myProps.select || item.path == myProps.select) {
+      item.itemClass = className ? className + " select" : "select"
+    } else {
+      item.itemClass = className.replace(/( *)select/g, '')
+    }
+    return item
+  })
+  return <Aotoo.tree {...myProps}/>
+}
 
 export class Tabs extends React.Component {
   constructor(props){
@@ -20,30 +30,14 @@ export class Tabs extends React.Component {
   componentWillMount() {
     this.prepaireData(this.state)
   }
-
-  componentWillUpdate(nextProps, nextState){
-    this.prepaireData(nextState)
-  }
-
-  /**
-   * [
-   *   {title, content, idf, parent, attr, path},
-   *   {title, content, idf, parent, attr, path},
-   * ]
-   */
+  
   prepaireData(state){
     const that = this
     const props = this.props
-    const propsItemClass = props.itemClass ? props.itemClass + ' ' : ''
-    const myItemMethod = props.tabItemMethod || props.itemMethod
     
     let menuData = []
     let contentData = []
     state.data.forEach( (item, ii) => {
-      const itemCls = ii == state.select
-        ? item.itemClass ? propsItemClass+item.itemClass+' select' : propsItemClass+'select'
-        : item.itemClass ? propsItemClass+item.itemClass : propsItemClass
-
       // 准备菜单数据
       menuData.push({
         index: ii,
@@ -52,8 +46,8 @@ export class Tabs extends React.Component {
         idf: item.idf,
         parent: item.parent,
         attr: item.attr,
-        itemClass: itemCls,
-        itemMethod: myItemMethod
+        itemClass: props.itemClass,
+        itemMethod: props.tabItemMethod || props.itemMethod
       })
 
       // 准备内容数据
@@ -69,26 +63,19 @@ export class Tabs extends React.Component {
       MenuData: menuData,
       ContentData: contentData
     })
-
-    this.createMenu()
   }
 
   createMenu(){
     const props = this.props
     const menu_data = this.saxer.get().MenuData
-    const myItemMethod = props.tabItemMethod || props.itemMethod
-    
-    const treeMenu = this.tree({
-      data: menu_data,
-      itemClass: this.props.itemClass,
-      itemMethod: myItemMethod,
-      header: this.props.treeHeader,
-      footer: this.props.treeFotter
-    })
-
-    this.saxer.append({
-      MenuJsx: treeMenu
-    })
+    return <TabsMenus
+      data={menu_data}
+      itemClass={props.itemClass}
+      itemMethod={props.tabItemMethod || props.itemMethod}
+      header={props.treeHeader}
+      footer={props.treeFooter}
+      select={this.state.select}
+    />
   }
 
   getContent(id){
@@ -106,9 +93,7 @@ export class Tabs extends React.Component {
           })
         }
       })
-      return this.list({
-        data: _contents
-      })
+      return <Aotoo.list data={_contents}/>
     }
 
     contents.forEach( item => {
@@ -126,8 +111,8 @@ export class Tabs extends React.Component {
   }
 
   render(){
-    const jsxMenu = this.saxer.get().MenuJsx
     let content = this.getContent()
+    const jsxMenu = this.createMenu()
     if (typeof content == 'function') {
       content = content(this.state.selectData)
     }
@@ -145,7 +130,6 @@ export class Tabs extends React.Component {
 }
 
 Aotoo.extend('tabs', function(params, utile){
-
   let dft = {
     props: {
       tabClass: 'tabsGroupX',
@@ -188,75 +172,3 @@ Aotoo.extend('tabs', function(params, utile){
   }
   return myTabs
 })
-
-
-
-// import css style
-// require('./tabs.styl')
-
-
-// demo
-// const WrapElement = Aotoo.wrap(
-//   <div>这个真好吃</div>, {
-//     rendered: function(dom){
-//       console.log('========= rendered');
-//     },
-//     leave: function(){
-//       console.log('========= leave');
-//     }
-//   }
-// )
-
-// function mkTabs(opts){
-//   const dft = {
-//     props: {
-//       mulitple: false,
-//       data: [],
-//       tabClass: 'tabs-nornal-top'
-//     }
-//   }
-//   // if (){}
-// }
-
-// const tabs = Aotoo.tabs({
-//   props: {
-//     mulitple: true,         //默认为false ,为true时，组件里所有content都会显示
-//     // tabClass: 'tabs-nornal',
-//     // tabClass: 'tabs-floor-left',
-//     tabClass: 'tabs-nornal-top',
-//     data: [
-//       // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-//       {title: 'aaa', content: '什么, what'},
-//       {title: 'bbb', content: '来了'},
-//       {title: 'ccc', content: <WrapElement />},
-//     ]
-//   }
-// })
-
-
-// const $ = require('jquery')
-// // //用于tabs-floor-left
-// // tabs.render('test', function(dom){
-// //   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-// //     let index = $(this).attr('data-treeid')
-// //     let num = parseInt(index) + 1
-// //     tabs.$select({
-// //       select: index
-// //     })
-// //     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top
-// //     $("html,body").animate({scrollTop: target_top}, 500)
-// //   })
-// // })
-// tabs.render('test', function(dom){
-//   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-//     let index = $(this).attr('data-treeid')
-//     let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',
-//     tabs.$select({
-//       select: index,
-//       cb: function(){ }
-//     })
-//     // let target_top = $(this).parents('.tabsMenus').next('.tabsBoxes').offset().top     //适合于 mlitple = true，tabClass: 'tabs-nornal-top',
-//     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
-//     $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
-//   })
-// })

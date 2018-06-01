@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -6,15 +6,27 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/**
- * depends Aotoo as global variable
- */
+var TabsMenus = function TabsMenus(props) {
+  var myProps = _extends({}, props);
+  myProps.data = myProps.data.map(function (item) {
+    var className = item.itemClass || '';
+    if (item.index == myProps.select || item.path == myProps.select) {
+      item.itemClass = className ? className + " select" : "select";
+    } else {
+      item.itemClass = className.replace(/( *)select/g, '');
+    }
+    return item;
+  });
+  return React.createElement(Aotoo.tree, myProps);
+};
 
 var Tabs = exports.Tabs = function (_React$Component) {
   _inherits(Tabs, _React$Component);
@@ -38,36 +50,19 @@ var Tabs = exports.Tabs = function (_React$Component) {
   }
 
   _createClass(Tabs, [{
-    key: 'componentWillMount',
+    key: "componentWillMount",
     value: function componentWillMount() {
       this.prepaireData(this.state);
     }
   }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate(nextProps, nextState) {
-      this.prepaireData(nextState);
-    }
-
-    /**
-     * [
-     *   {title, content, idf, parent, attr, path},
-     *   {title, content, idf, parent, attr, path},
-     * ]
-     */
-
-  }, {
-    key: 'prepaireData',
+    key: "prepaireData",
     value: function prepaireData(state) {
       var that = this;
       var props = this.props;
-      var propsItemClass = props.itemClass ? props.itemClass + ' ' : '';
-      var myItemMethod = props.tabItemMethod || props.itemMethod;
 
       var menuData = [];
       var contentData = [];
       state.data.forEach(function (item, ii) {
-        var itemCls = ii == state.select ? item.itemClass ? propsItemClass + item.itemClass + ' select' : propsItemClass + 'select' : item.itemClass ? propsItemClass + item.itemClass : propsItemClass;
-
         // 准备菜单数据
         menuData.push({
           index: ii,
@@ -76,8 +71,8 @@ var Tabs = exports.Tabs = function (_React$Component) {
           idf: item.idf,
           parent: item.parent,
           attr: item.attr,
-          itemClass: itemCls,
-          itemMethod: myItemMethod
+          itemClass: props.itemClass,
+          itemMethod: props.tabItemMethod || props.itemMethod
         }
 
         // 准备内容数据
@@ -93,30 +88,23 @@ var Tabs = exports.Tabs = function (_React$Component) {
         MenuData: menuData,
         ContentData: contentData
       });
-
-      this.createMenu();
     }
   }, {
-    key: 'createMenu',
+    key: "createMenu",
     value: function createMenu() {
       var props = this.props;
       var menu_data = this.saxer.get().MenuData;
-      var myItemMethod = props.tabItemMethod || props.itemMethod;
-
-      var treeMenu = this.tree({
+      return React.createElement(TabsMenus, {
         data: menu_data,
-        itemClass: this.props.itemClass,
-        itemMethod: myItemMethod,
-        header: this.props.treeHeader,
-        footer: this.props.treeFotter
-      });
-
-      this.saxer.append({
-        MenuJsx: treeMenu
+        itemClass: props.itemClass,
+        itemMethod: props.tabItemMethod || props.itemMethod,
+        header: props.treeHeader,
+        footer: props.treeFooter,
+        select: this.state.select
       });
     }
   }, {
-    key: 'getContent',
+    key: "getContent",
     value: function getContent(id) {
       var select = this.state.select;
       var contents = this.saxer.get().ContentData;
@@ -132,9 +120,7 @@ var Tabs = exports.Tabs = function (_React$Component) {
             });
           }
         });
-        return this.list({
-          data: _contents
-        });
+        return React.createElement(Aotoo.list, { data: _contents });
       }
 
       contents.forEach(function (item) {
@@ -151,10 +137,10 @@ var Tabs = exports.Tabs = function (_React$Component) {
       return selectContent;
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
-      var jsxMenu = this.saxer.get().MenuJsx;
       var content = this.getContent();
+      var jsxMenu = this.createMenu();
       if (typeof content == 'function') {
         content = content(this.state.selectData);
       }
@@ -163,15 +149,15 @@ var Tabs = exports.Tabs = function (_React$Component) {
       var boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple';
 
       return React.createElement(
-        'div',
+        "div",
         { className: cls },
         this.state.showMenu ? React.createElement(
-          'div',
-          { className: 'tabsMenus' },
+          "div",
+          { className: "tabsMenus" },
           jsxMenu
         ) : '',
         React.createElement(
-          'div',
+          "div",
           { className: boxes_cls },
           content
         )
@@ -183,7 +169,6 @@ var Tabs = exports.Tabs = function (_React$Component) {
 }(React.Component);
 
 Aotoo.extend('tabs', function (params, utile) {
-
   var dft = {
     props: {
       tabClass: 'tabsGroupX',
@@ -225,76 +210,5 @@ Aotoo.extend('tabs', function (params, utile) {
     }
   };
   return myTabs;
-}
-
-// import css style
-// require('./tabs.styl')
-
-
-// demo
-// const WrapElement = Aotoo.wrap(
-//   <div>这个真好吃</div>, {
-//     rendered: function(dom){
-//       console.log('========= rendered');
-//     },
-//     leave: function(){
-//       console.log('========= leave');
-//     }
-//   }
-// )
-
-// function mkTabs(opts){
-//   const dft = {
-//     props: {
-//       mulitple: false,
-//       data: [],
-//       tabClass: 'tabs-nornal-top'
-//     }
-//   }
-//   // if (){}
-// }
-
-// const tabs = Aotoo.tabs({
-//   props: {
-//     mulitple: true,         //默认为false ,为true时，组件里所有content都会显示
-//     // tabClass: 'tabs-nornal',
-//     // tabClass: 'tabs-floor-left',
-//     tabClass: 'tabs-nornal-top',
-//     data: [
-//       // {title: 'aaa', content: '什么', idf: 'le1', itemClass: 'aabbcc'},
-//       {title: 'aaa', content: '什么, what'},
-//       {title: 'bbb', content: '来了'},
-//       {title: 'ccc', content: <WrapElement />},
-//     ]
-//   }
-// })
-
-
-// const $ = require('jquery')
-// // //用于tabs-floor-left
-// // tabs.render('test', function(dom){
-// //   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-// //     let index = $(this).attr('data-treeid')
-// //     let num = parseInt(index) + 1
-// //     tabs.$select({
-// //       select: index
-// //     })
-// //     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top
-// //     $("html,body").animate({scrollTop: target_top}, 500)
-// //   })
-// // })
-// tabs.render('test', function(dom){
-//   $(dom).find('.tabsMenus li:not(.itemroot)').click(function(){
-//     let index = $(this).attr('data-treeid')
-//     let num = parseInt(index) + 1     // mlitple = false  ,tabClass: 'tabs-nornal-top',
-//     tabs.$select({
-//       select: index,
-//       cb: function(){ }
-//     })
-//     // let target_top = $(this).parents('.tabsMenus').next('.tabsBoxes').offset().top     //适合于 mlitple = true，tabClass: 'tabs-nornal-top',
-//     let target_top = $(this).parents('.tabsMenus').next('.mulitple').find('>ul>li:nth-child('+num+')').offset().top - 50   // mlitple = false    50是tabsMenus的高度，tabClass: 'tabs-nornal-top',
-//     $("html,body").animate({scrollTop: target_top}, 500)  //适合于 mlitple = true与false，tabClass: 'tabs-nornal-top',
-//   })
-// })
-);
+});
 //# sourceMappingURL=maps/index.js.map
