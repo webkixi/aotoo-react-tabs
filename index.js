@@ -1,14 +1,17 @@
 const TabsMenus = (props) => {
   let myProps = {...props}
-  myProps.data = myProps.data.map( item => {
-    const className = item.itemClass||''
+  const propsData = []
+  myProps.data.forEach( item => {
+    const className = (item.itemClass||'').replace(/ *select/g, '')
     if (item.index == myProps.select || item.path == myProps.select) {
       item.itemClass = className ? className + " select" : "select"
     } else {
       item.itemClass = className.replace(/( *)select/g, '')
     }
+    propsData.push(item)
     return item
   })
+  myProps.data = propsData
   return <Aotoo.tree {...myProps}/>
 }
 
@@ -71,7 +74,7 @@ export class Tabs extends React.Component {
     return <TabsMenus
       data={menu_data}
       itemClass={props.itemClass}
-      itemMethod={props.tabItemMethod || props.itemMethod}
+      itemMethod={props.navItemMethod || props.tapItemMethod || props.tabItemMethod || props.itemMethod}
       header={props.treeHeader}
       footer={props.treeFooter}
       select={this.state.select}
@@ -138,7 +141,7 @@ Aotoo.extend('tabs', function(params, utile){
       showMenu: true
     }
   }
-  if (params.props && params.props.itemMethod) {
+  if (params && params.props && params.props.itemMethod) {
     params.props.tabItemMethod = params.props.itemMethod
     delete params.props.itemMethod
   }

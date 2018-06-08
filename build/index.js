@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -16,15 +16,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var TabsMenus = function TabsMenus(props) {
   var myProps = _extends({}, props);
-  myProps.data = myProps.data.map(function (item) {
-    var className = item.itemClass || '';
+  var propsData = [];
+  myProps.data.forEach(function (item) {
+    var className = (item.itemClass || '').replace(/ *select/g, '');
     if (item.index == myProps.select || item.path == myProps.select) {
       item.itemClass = className ? className + " select" : "select";
     } else {
       item.itemClass = className.replace(/( *)select/g, '');
     }
+    propsData.push(item);
     return item;
   });
+  myProps.data = propsData;
   return React.createElement(Aotoo.tree, myProps);
 };
 
@@ -50,12 +53,12 @@ var Tabs = exports.Tabs = function (_React$Component) {
   }
 
   _createClass(Tabs, [{
-    key: "componentWillMount",
+    key: 'componentWillMount',
     value: function componentWillMount() {
       this.prepaireData(this.state);
     }
   }, {
-    key: "prepaireData",
+    key: 'prepaireData',
     value: function prepaireData(state) {
       var that = this;
       var props = this.props;
@@ -90,21 +93,21 @@ var Tabs = exports.Tabs = function (_React$Component) {
       });
     }
   }, {
-    key: "createMenu",
+    key: 'createMenu',
     value: function createMenu() {
       var props = this.props;
       var menu_data = this.saxer.get().MenuData;
       return React.createElement(TabsMenus, {
         data: menu_data,
         itemClass: props.itemClass,
-        itemMethod: props.tabItemMethod || props.itemMethod,
+        itemMethod: props.navItemMethod || props.tapItemMethod || props.tabItemMethod || props.itemMethod,
         header: props.treeHeader,
         footer: props.treeFooter,
         select: this.state.select
       });
     }
   }, {
-    key: "getContent",
+    key: 'getContent',
     value: function getContent(id) {
       var select = this.state.select;
       var contents = this.saxer.get().ContentData;
@@ -137,7 +140,7 @@ var Tabs = exports.Tabs = function (_React$Component) {
       return selectContent;
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var content = this.getContent();
       var jsxMenu = this.createMenu();
@@ -149,15 +152,15 @@ var Tabs = exports.Tabs = function (_React$Component) {
       var boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple';
 
       return React.createElement(
-        "div",
+        'div',
         { className: cls },
         this.state.showMenu ? React.createElement(
-          "div",
-          { className: "tabsMenus" },
+          'div',
+          { className: 'tabsMenus' },
           jsxMenu
         ) : '',
         React.createElement(
-          "div",
+          'div',
           { className: boxes_cls },
           content
         )
@@ -177,7 +180,7 @@ Aotoo.extend('tabs', function (params, utile) {
       showMenu: true
     }
   };
-  if (params.props && params.props.itemMethod) {
+  if (params && params.props && params.props.itemMethod) {
     params.props.tabItemMethod = params.props.itemMethod;
     delete params.props.itemMethod;
   }
