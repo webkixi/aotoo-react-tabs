@@ -92,7 +92,7 @@ export class Tabs extends React.Component {
         if (!item.idf) {
           _contents.push({
             title: item.content,
-            itemClass: (id&&item.path&&item.path == id) ? 'select' : item.index == id ? 'select' : item.index == select ? 'select' : ''
+            itemClass: (id && item.path && item.path == id) ? 'select' : item.index == id ? 'select' : (item.index == select || item.path == select) ? 'select' : ''
           })
         }
       })
@@ -105,7 +105,7 @@ export class Tabs extends React.Component {
           selectContent = item.content
         }
       } else {
-        if (item.index == select) {
+        if (item.index == select || item.path == select) {
           selectContent = item.content
         }
       }
@@ -153,13 +153,16 @@ Aotoo.extend('tabs', function(params, utile){
       state.data = opts.data
       return state
     },
-    SELECT: function(ostate, opts){
+    SELECT: function(ostate, opts={}){
       let state = this.curState
+      if (typeof opts=='string' || typeof opts=='number') {
+        opts = {select: opts}
+      }
       state.select = opts.select
       if (typeof opts.cb == 'function') {
         setTimeout(function() {
           opts.cb()
-        }, 100);
+        }, 300);
       }
       return state
     },
