@@ -84,6 +84,7 @@ export class Tabs extends React.Component {
   getContent(id){
     const select = this.state.select
     const contents = this.saxer.get().ContentData
+    const stateContents = this.state.data
     let _contents = []
     let selectContent
 
@@ -102,11 +103,11 @@ export class Tabs extends React.Component {
     contents.forEach( item => {
       if ( (id||id==0)) {
         if (item.path == id || item.index == id) {
-          selectContent = item.content
+          selectContent = item.content || stateContents[item.index]['content']
         }
       } else {
         if (item.index == select || item.path == select) {
-          selectContent = item.content
+          selectContent = item.content || stateContents[item.index]['content']
         }
       }
     })
@@ -159,6 +160,7 @@ Aotoo.extend('tabs', function(params, utile){
         opts = {select: opts}
       }
       state.select = opts.select
+      state.selectData = opts.selectData
       if (typeof opts.cb == 'function') {
         setTimeout(function() {
           opts.cb()
