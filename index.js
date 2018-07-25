@@ -164,7 +164,7 @@ Aotoo.extend('tabs', function(params, utile){
       if (typeof opts.cb == 'function') {
         setTimeout(function() {
           opts.cb()
-        }, 300);
+        }, 50);
       }
       return state
     },
