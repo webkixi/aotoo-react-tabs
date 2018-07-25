@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -13,6 +15,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+require('aotoo-mixins-iscroll');
 
 var TabsMenus = function TabsMenus(props) {
   var myProps = _extends({}, props);
@@ -145,6 +149,22 @@ var Tabs = exports.Tabs = function (_React$Component) {
     value: function render() {
       var content = this.getContent();
       var jsxMenu = this.createMenu();
+      var myJsxMenu = React.createElement(
+        'div',
+        { className: 'tabsMenus' },
+        jsxMenu
+      );
+
+      var thisConfig = this.config;
+      if (thisConfig.iscrollConfig && _typeof(thisConfig.iscrollConfig) == 'object') {
+        var IscrollTreeMenu = Aotoo.iscroll(React.createElement(
+          'div',
+          { className: 'tabsMenus' },
+          jsxMenu
+        ), thisConfig.iscrollConfig);
+        myJsxMenu = React.createElement(IscrollTreeMenu, null);
+      }
+
       if (typeof content == 'function') {
         content = content(this.state.selectData);
       }
@@ -155,11 +175,7 @@ var Tabs = exports.Tabs = function (_React$Component) {
       return React.createElement(
         'div',
         { className: cls },
-        this.state.showMenu ? React.createElement(
-          'div',
-          { className: 'tabsMenus' },
-          jsxMenu
-        ) : '',
+        this.state.showMenu ? myJsxMenu : '',
         React.createElement(
           'div',
           { className: boxes_cls },
@@ -179,7 +195,8 @@ Aotoo.extend('tabs', function (params, utile) {
       mulitple: false,
       tabItemMethod: undefined,
       showMenu: true
-    }
+    },
+    iscrollConfig: undefined
   };
   if (params && params.props && params.props.itemMethod) {
     params.props.tabItemMethod = params.props.itemMethod;

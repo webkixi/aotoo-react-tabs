@@ -1,3 +1,5 @@
+require('aotoo-mixins-iscroll')
+
 const TabsMenus = (props) => {
   let myProps = {...props}
   const propsData = []
@@ -116,7 +118,18 @@ export class Tabs extends React.Component {
 
   render(){
     let content = this.getContent()
-    const jsxMenu = this.createMenu()
+    let jsxMenu = this.createMenu()
+    let myJsxMenu = <div className='tabsMenus'>{jsxMenu}</div>
+
+    let thisConfig = this.config
+    if (thisConfig.iscrollConfig && typeof thisConfig.iscrollConfig == 'object') {
+      let IscrollTreeMenu = Aotoo.iscroll(
+        <div className='tabsMenus'>{jsxMenu}</div>, 
+        thisConfig.iscrollConfig
+      )
+      myJsxMenu = <IscrollTreeMenu />
+    }
+
     if (typeof content == 'function') {
       content = content(this.state.selectData)
     }
@@ -126,7 +139,7 @@ export class Tabs extends React.Component {
 
     return (
       <div className={cls}>
-        { this.state.showMenu ? <div className='tabsMenus'>{jsxMenu}</div> : '' }
+        { this.state.showMenu ? myJsxMenu : '' }
         <div className={boxes_cls}>{content}</div>
       </div>
     )
@@ -140,7 +153,8 @@ Aotoo.extend('tabs', function(params, utile){
       mulitple: false,
       tabItemMethod: undefined,
       showMenu: true
-    }
+    },
+    iscrollConfig: undefined
   }
   if (params && params.props && params.props.itemMethod) {
     params.props.tabItemMethod = params.props.itemMethod
