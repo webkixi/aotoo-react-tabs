@@ -1,6 +1,6 @@
 {
   "name": "aotoo-react-tabs",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "react tabs component that based on the aotoo",
   "main": "./build/index.js",
   "scripts": {
@@ -34,6 +34,6 @@
   },
   "homepage": "https://github.com/webkixi/aotoo-react-tabs#readme",
   "dependencies": {
-    "aotoo-mixins-iscroll": "^1.0.7"
+    "iscroll": "^5.2.0"
   }
 }

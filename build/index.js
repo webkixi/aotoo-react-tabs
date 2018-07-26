@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -16,7 +14,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-require('aotoo-mixins-iscroll');
+// require('aotoo-mixins-iscroll')
 
 var TabsMenus = function TabsMenus(props) {
   var myProps = _extends({}, props);
@@ -151,19 +149,18 @@ var Tabs = exports.Tabs = function (_React$Component) {
       var jsxMenu = this.createMenu();
       var myJsxMenu = React.createElement(
         'div',
-        { className: 'tabsMenus' },
+        { ref: 'tabsMenus', className: 'tabsMenus' },
         jsxMenu
       );
 
-      var thisConfig = this.config;
-      if (thisConfig.iscrollConfig && _typeof(thisConfig.iscrollConfig) == 'object') {
-        var IscrollTreeMenu = Aotoo.iscroll(React.createElement(
-          'div',
-          { className: 'tabsMenus' },
-          jsxMenu
-        ), thisConfig.iscrollConfig);
-        myJsxMenu = React.createElement(IscrollTreeMenu, null);
-      }
+      // let thisConfig = this.config
+      // if (thisConfig.iscrollConfig && typeof thisConfig.iscrollConfig == 'object') {
+      //   let IscrollTreeMenu = Aotoo.iscroll(
+      //     <div className='tabsMenus'>{jsxMenu}</div>, 
+      //     thisConfig.iscrollConfig
+      //   )
+      //   myJsxMenu = <IscrollTreeMenu />
+      // }
 
       if (typeof content == 'function') {
         content = content(this.state.selectData);
@@ -174,11 +171,11 @@ var Tabs = exports.Tabs = function (_React$Component) {
 
       return React.createElement(
         'div',
-        { className: cls },
+        { ref: 'tabsGroup', className: cls },
         this.state.showMenu ? myJsxMenu : '',
         React.createElement(
           'div',
-          { className: boxes_cls },
+          { ref: 'tabsBoxes', className: boxes_cls },
           content
         )
       );
@@ -236,6 +233,16 @@ Aotoo.extend('tabs', function (params, utile) {
       myTabs.config = utile.merge({}, myTabs.config, { props: options });
     }
   };
+  myTabs.on('__beforeRendered', function (opts) {
+    var dom = opts.dom,
+        refs = opts.refs,
+        context = opts.context;
+
+    if (typeof window != 'undefined' && dft.iscrollConfig) {
+      var $iscroll = require('iscroll/build/iscroll-probe');
+      context.scrollMenu = new $iscroll(refs.tabsMenus, dft.iscrollConfig);
+    }
+  });
   return myTabs;
 });
 //# sourceMappingURL=maps/index.js.map

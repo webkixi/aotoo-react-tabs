@@ -1,4 +1,4 @@
-require('aotoo-mixins-iscroll')
+// require('aotoo-mixins-iscroll')
 
 const TabsMenus = (props) => {
   let myProps = {...props}
@@ -119,16 +119,16 @@ export class Tabs extends React.Component {
   render(){
     let content = this.getContent()
     let jsxMenu = this.createMenu()
-    let myJsxMenu = <div className='tabsMenus'>{jsxMenu}</div>
+    let myJsxMenu = <div ref="tabsMenus" className='tabsMenus'>{jsxMenu}</div>
 
-    let thisConfig = this.config
-    if (thisConfig.iscrollConfig && typeof thisConfig.iscrollConfig == 'object') {
-      let IscrollTreeMenu = Aotoo.iscroll(
-        <div className='tabsMenus'>{jsxMenu}</div>, 
-        thisConfig.iscrollConfig
-      )
-      myJsxMenu = <IscrollTreeMenu />
-    }
+    // let thisConfig = this.config
+    // if (thisConfig.iscrollConfig && typeof thisConfig.iscrollConfig == 'object') {
+    //   let IscrollTreeMenu = Aotoo.iscroll(
+    //     <div className='tabsMenus'>{jsxMenu}</div>, 
+    //     thisConfig.iscrollConfig
+    //   )
+    //   myJsxMenu = <IscrollTreeMenu />
+    // }
 
     if (typeof content == 'function') {
       content = content(this.state.selectData)
@@ -138,9 +138,9 @@ export class Tabs extends React.Component {
     const boxes_cls = !this.props.mulitple ? 'tabsBoxes' : 'tabsBoxes mulitple'
 
     return (
-      <div className={cls}>
+      <div ref="tabsGroup" className={cls}>
         { this.state.showMenu ? myJsxMenu : '' }
-        <div className={boxes_cls}>{content}</div>
+        <div ref="tabsBoxes" className={boxes_cls}>{content}</div>
       </div>
     )
   }
@@ -192,5 +192,12 @@ Aotoo.extend('tabs', function(params, utile){
       myTabs.config = utile.merge({}, myTabs.config, {props: options})
     }
   }
+  myTabs.on('__beforeRendered', function (opts) {
+    const {dom, refs, context} = opts
+    if (typeof window != 'undefined' && dft.iscrollConfig) {
+      var $iscroll = require('iscroll/build/iscroll-probe')
+      context.scrollMenu = new $iscroll(refs.tabsMenus, dft.iscrollConfig)
+    }
+  })
   return myTabs
 })
