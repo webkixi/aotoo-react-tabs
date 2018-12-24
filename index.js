@@ -117,9 +117,19 @@ export class Tabs extends React.Component {
   }
 
   render(){
+    let thisConfig = this.config
     let content = this.getContent()
     let jsxMenu = this.createMenu()
     let myJsxMenu = <div ref="tabsMenus" className='tabsMenus'>{jsxMenu}</div>
+    if (thisConfig.iscrollConfig) {
+      myJsxMenu = (
+        <div className='tabsMenus'>
+          <div ref="tabsMenus" className="innerWrap">
+            {jsxMenu}
+          </div>
+        </div>
+      )
+    } 
 
     // let thisConfig = this.config
     // if (thisConfig.iscrollConfig && typeof thisConfig.iscrollConfig == 'object') {

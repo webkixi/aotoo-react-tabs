@@ -145,6 +145,7 @@ var Tabs = exports.Tabs = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var thisConfig = this.config;
       var content = this.getContent();
       var jsxMenu = this.createMenu();
       var myJsxMenu = React.createElement(
@@ -152,6 +153,17 @@ var Tabs = exports.Tabs = function (_React$Component) {
         { ref: 'tabsMenus', className: 'tabsMenus' },
         jsxMenu
       );
+      if (thisConfig.iscrollConfig) {
+        myJsxMenu = React.createElement(
+          'div',
+          { className: 'tabsMenus' },
+          React.createElement(
+            'div',
+            { ref: 'tabsMenus', className: 'innerWrap' },
+            jsxMenu
+          )
+        );
+      }
 
       // let thisConfig = this.config
       // if (thisConfig.iscrollConfig && typeof thisConfig.iscrollConfig == 'object') {
