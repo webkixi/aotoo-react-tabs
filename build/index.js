@@ -102,10 +102,8 @@ var Tabs = exports.Tabs = function (_React$Component) {
       return React.createElement(TabsMenus, {
         data: menu_data,
         itemClass: props.itemClass,
-        itemMethod: props.navItemMethod || props.tapItemMethod || props.tabItemMethod || props.itemMethod
-        // header={props.treeHeader}
-        // footer={props.treeFooter}
-        , select: this.state.select
+        itemMethod: props.navItemMethod || props.tapItemMethod || props.tabItemMethod || props.itemMethod,
+        select: this.state.select
       });
     }
   }, {
@@ -146,6 +144,7 @@ var Tabs = exports.Tabs = function (_React$Component) {
     key: 'render',
     value: function render() {
       var thisConfig = this.config;
+      var props = this.props;
       var content = this.getContent();
       var jsxMenu = this.createMenu();
       var myJsxMenu = React.createElement(

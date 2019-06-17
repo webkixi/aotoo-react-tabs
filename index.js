@@ -77,8 +77,6 @@ export class Tabs extends React.Component {
       data={menu_data}
       itemClass={props.itemClass}
       itemMethod={props.navItemMethod || props.tapItemMethod || props.tabItemMethod || props.itemMethod}
-      // header={props.treeHeader}
-      // footer={props.treeFooter}
       select={this.state.select}
     />
   }
@@ -118,6 +116,7 @@ export class Tabs extends React.Component {
 
   render(){
     let thisConfig = this.config
+    let props = this.props
     let content = this.getContent()
     let jsxMenu = this.createMenu()
     let myJsxMenu = <div ref="tabsMenus" className='tabsMenus'>{props.treeHeader}{jsxMenu}{props.treeFooter}</div>
